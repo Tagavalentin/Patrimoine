@@ -168,7 +168,7 @@ class DisposalService
                 }
             })
             ->latest()
-            ->paginate((int) ($filters['per_page'] ?? 15));
+            ->paginate(min(100, max(1, (int) ($filters['per_page'] ?? 15))));
     }
 
     public function historyFor(Asset $asset)

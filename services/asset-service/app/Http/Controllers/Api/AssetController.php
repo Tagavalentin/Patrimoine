@@ -24,7 +24,23 @@ class AssetController extends Controller
     {
         $this->authorize('viewAny', Asset::class);
 
-        return AssetResource::collection($this->assets->paginate($request->query()));
+        $filters = $request->validate([
+            'search' => ['sometimes', 'string', 'max:100'],
+            'status' => ['sometimes', 'string'],
+            'category_id' => ['sometimes', 'integer', 'min:1'],
+            'location_id' => ['sometimes', 'integer', 'min:1'],
+            'department_id' => ['sometimes', 'integer', 'min:1'],
+            'acquisition_date_from' => ['sometimes', 'date'],
+            'acquisition_date_to' => ['sometimes', 'date'],
+            'value_min' => ['sometimes', 'numeric', 'min:0'],
+            'value_max' => ['sometimes', 'numeric', 'min:0'],
+            'sort' => ['sometimes', 'string'],
+            'direction' => ['sometimes', 'in:asc,desc'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+        ]);
+
+        return AssetResource::collection($this->assets->paginate($filters));
     }
 
     public function store(StoreAssetRequest $request): JsonResponse

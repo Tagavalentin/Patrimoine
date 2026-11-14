@@ -32,9 +32,9 @@ class MaintenanceRequestController extends Controller
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ]);
 
-        // Les utilisateurs non gestionnaires ne voient que leurs demandes
+        // Les utilisateurs non gestionnaires/auditeurs/comptables ne voient que leurs demandes
         $user = $request->user();
-        if ($user && ! in_array($user->role(), ['admin', 'asset_manager'], true)) {
+        if ($user && ! in_array($user->role(), ['admin', 'asset_manager', 'accountant', 'auditor'], true)) {
             $filters['mine'] = $user->getAuthIdentifier();
         }
 

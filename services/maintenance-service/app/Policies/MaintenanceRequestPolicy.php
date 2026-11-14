@@ -16,7 +16,12 @@ class MaintenanceRequestPolicy
 
     public function view(JwtUser $user, MaintenanceRequest $request): bool
     {
-        return true;
+        if (in_array($user->role(), ['admin', 'asset_manager', 'accountant', 'auditor'], true)) {
+            return true;
+        }
+
+        return $request->requested_by !== null
+            && (int) $request->requested_by === $user->getAuthIdentifier();
     }
 
     /** Création de demande : tout rôle authentifié. */

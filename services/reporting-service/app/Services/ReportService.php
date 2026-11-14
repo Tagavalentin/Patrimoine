@@ -187,8 +187,18 @@ class ReportService
             // BOM UTF-8 pour Excel
             fwrite($out, "\xEF\xBB\xBF");
             fputcsv($out, $header, ';');
+
+            // Neutralise l'injection de formules à l'ouverture dans Excel.
+            $sanitize = static function ($value) {
+                if (! is_string($value) || $value === '' || is_numeric($value)) {
+                    return $value;
+                }
+
+                return preg_match('/^[\s]*[=+\-@]/', $value) === 1 ? "'".$value : $value;
+            };
+
             foreach ($rows as $row) {
-                fputcsv($out, $row, ';');
+                fputcsv($out, array_map($sanitize, $row), ';');
             }
             fclose($out);
         }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);

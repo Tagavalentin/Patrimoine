@@ -26,8 +26,21 @@ class AssignmentController extends Controller
     {
         $this->authorize('viewAny', Assignment::class);
 
+        $filters = $request->validate([
+            'asset_id' => ['sometimes', 'integer', 'min:1'],
+            'department_id' => ['sometimes', 'integer', 'min:1'],
+            'responsible_user_id' => ['sometimes', 'integer', 'min:1'],
+            'active' => ['sometimes', 'boolean'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+        ]);
+
+        if (array_key_exists('active', $filters)) {
+            $filters['active'] = $request->boolean('active');
+        }
+
         return AssignmentResource::collection(
-            $this->assignments->paginate($request->query())
+            $this->assignments->paginate($filters)
         );
     }
 

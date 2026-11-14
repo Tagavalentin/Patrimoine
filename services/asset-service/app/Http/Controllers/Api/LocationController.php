@@ -35,7 +35,7 @@ class LocationController extends Controller
                 fn (Builder $q) => $q->orderBy($request->query('sort'), $request->query('direction') === 'desc' ? 'desc' : 'asc'),
                 fn (Builder $q) => $q->orderBy('name'),
             )
-            ->paginate((int) $request->query('per_page', 15));
+            ->paginate(min(100, max(1, (int) $request->query('per_page', 15))));
 
         return LocationResource::collection($locations);
     }

@@ -152,7 +152,7 @@ class AssignmentService
                     : $q->whereNotNull('end_date'),
             )
             ->latest('start_date')
-            ->paginate((int) ($filters['per_page'] ?? 15));
+            ->paginate(min(100, max(1, (int) ($filters['per_page'] ?? 15))));
     }
 
     /** @return Collection<int, Assignment> */

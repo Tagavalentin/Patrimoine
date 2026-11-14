@@ -55,7 +55,7 @@ class AssetRepository
         $direction = ($filters['direction'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
 
         return $query->orderBy($sort, $direction)
-            ->paginate((int) ($filters['per_page'] ?? 15));
+            ->paginate(min(100, max(1, (int) ($filters['per_page'] ?? 15))));
     }
 
     public function find(int $id): ?Asset
