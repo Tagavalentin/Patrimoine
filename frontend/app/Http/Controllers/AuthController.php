@@ -53,6 +53,7 @@ class AuthController extends Controller
 
         session([
             'jwt_token' => $token,
+            'jwt_expires_at' => now()->addSeconds((int) ($response['expires_in'] ?? 3600))->timestamp,
             'jwt_user' => [
                 'id' => $user['id'] ?? null,
                 'name' => $user['name'] ?? null,
@@ -75,7 +76,7 @@ class AuthController extends Controller
             // Best effort : le token expirera de toute façon
         }
 
-        $request->session()->forget(['jwt_token', 'jwt_user']);
+        $request->session()->forget(['jwt_token', 'jwt_user', 'jwt_expires_at']);
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

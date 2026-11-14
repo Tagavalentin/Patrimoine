@@ -58,7 +58,7 @@ class ScreensTest extends TestCase
             ], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token'])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp])
             ->get('/dashboard')
             ->assertOk()
             ->assertSee('Tableau de bord')
@@ -88,7 +88,7 @@ class ScreensTest extends TestCase
             ], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token'])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp])
             ->get('/biens')
             ->assertOk()
             ->assertSee('AST-2026-0005')
@@ -136,7 +136,7 @@ class ScreensTest extends TestCase
             ], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token'])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp])
             ->get('/biens/5')
             ->assertOk()
             ->assertSee('Portable Dell Latitude')
@@ -152,7 +152,7 @@ class ScreensTest extends TestCase
             '*/api/assets/assets*' => Http::response(['data' => [], 'meta' => ['total' => 0, 'last_page' => 1]], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token'])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp])
             ->get('/biens')
             ->assertOk();
 

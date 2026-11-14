@@ -17,7 +17,7 @@ class AssignmentScreensTest extends TestCase
 
     private function authSession(array $overrides = []): array
     {
-        return ['jwt_token' => 'jwt-test-token', 'jwt_user' => $overrides + [
+        return ['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp, 'jwt_user' => $overrides + [
             'id' => 1, 'name' => 'Admin', 'email' => 'a@x.sn', 'role' => 'admin', 'role_name' => 'Administrateur',
         ]];
     }

@@ -16,7 +16,14 @@ class EnsureFrontendAuth
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! is_string(session('jwt_token')) || session('jwt_token') === '') {
+        $token = session('jwt_token');
+        $expiresAt = (int) session('jwt_expires_at', 0);
+
+        if (! is_string($token) || $token === '' || $expiresAt <= time()) {
+            if (is_string($token) && $token !== '') {
+                session()->forget(['jwt_token', 'jwt_user', 'jwt_expires_at']);
+            }
+
             return redirect()->route('login');
         }
 

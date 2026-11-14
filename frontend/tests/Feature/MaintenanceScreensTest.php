@@ -17,7 +17,7 @@ class MaintenanceScreensTest extends TestCase
 
     public function authSession(array $role = ['role' => 'admin', 'role_name' => 'Administrateur']): array
     {
-        return ['jwt_token' => 'jwt-test-token', 'jwt_user' => $role + ['id' => 1, 'name' => 'Admin', 'email' => 'a@x.sn']];
+        return ['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp, 'jwt_user' => $role + ['id' => 1, 'name' => 'Admin', 'email' => 'a@x.sn']];
     }
 
     public function test_maintenance_index_lists_requests(): void

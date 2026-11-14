@@ -100,7 +100,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - definissez-le dans .env (voir .env.example)}
       JWT_TTL: ${JWT_TTL:-60}
       JWT_ISSUER: ${JWT_ISSUER:-patrimoine-auth-service}
 
@@ -117,7 +117,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - definissez-le dans .env (voir .env.example)}
       JWT_TTL: ${JWT_TTL:-60}
       JWT_ISSUER: ${JWT_ISSUER:-patrimoine-auth-service}
 
@@ -134,7 +134,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - definissez-le dans .env (voir .env.example)}
       JWT_TTL: ${JWT_TTL:-60}
       JWT_ISSUER: ${JWT_ISSUER:-patrimoine-auth-service}
       ASSET_SERVICE_URL: http://asset-service-nginx
@@ -152,7 +152,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - definissez-le dans .env (voir .env.example)}
       JWT_TTL: ${JWT_TTL:-60}
       JWT_ISSUER: ${JWT_ISSUER:-patrimoine-auth-service}
       ASSET_SERVICE_URL: http://asset-service-nginx
@@ -170,7 +170,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - definissez-le dans .env (voir .env.example)}
       JWT_TTL: ${JWT_TTL:-60}
       JWT_ISSUER: ${JWT_ISSUER:-patrimoine-auth-service}
       ASSET_SERVICE_URL: http://asset-service-nginx
@@ -259,6 +259,7 @@ services:
     environment:
       APP_NAME: "Gestion du Patrimoine"
       SESSION_DRIVER: file
+      SESSION_ENCRYPT: "true"
       CACHE_STORE: file
       GATEWAY_URL: http://gateway
 

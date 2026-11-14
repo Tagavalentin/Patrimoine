@@ -50,7 +50,7 @@ class DashboardMenuTest extends TestCase
 
     private function sessionFor(string $role): array
     {
-        return ['jwt_token' => 'jwt-test-token', 'jwt_user' => [
+        return ['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp, 'jwt_user' => [
             'id' => 1, 'name' => 'Test User', 'email' => 'test@patrimoine.local',
             'role' => $role, 'role_name' => ucfirst(str_replace('_', ' ', $role)),
         ]];

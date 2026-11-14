@@ -93,7 +93,7 @@ class AuthTest extends TestCase
             ], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token'])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp])
             ->get('/dashboard')
             ->assertOk()
             ->assertSee('Tableau de bord');
@@ -105,7 +105,7 @@ class AuthTest extends TestCase
             '*/api/auth/logout' => Http::response(['message' => 'ok'], 200),
         ]);
 
-        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_user' => ['id' => 1]])
+        $this->withSession(['jwt_token' => 'jwt-test-token', 'jwt_expires_at' => now()->addHour()->timestamp, 'jwt_user' => ['id' => 1]])
             ->post('/logout')
             ->assertRedirect(route('login'));
 

@@ -22,6 +22,7 @@ upstream php_backend {
 server {
     listen 80;
     server_name ${SERVER_NAME};
+    server_tokens off;
     root ${ROOT_PATH};
     index index.php index.html;
 

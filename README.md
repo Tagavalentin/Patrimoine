@@ -88,13 +88,17 @@ git clone <url-du-depot> patrimoine-etat
 cd patrimoine-etat
 cp .env.example .env
 
-# 2. Démarrer l'infrastructure
+# 2. Générer le secret JWT partagé (OBLIGATOIRE)
+php -r "echo bin2hex(random_bytes(32));"
+# → coller la valeur générée dans .env : JWT_SECRET=<valeur>
+
+# 3. Démarrer l'infrastructure
 docker compose up -d
 
-# 3. Suivre les logs
+# 4. Suivre les logs
 docker compose logs -f
 
-# 4. Lancer les migrations (une fois les services initialisés)
+# 5. Lancer les migrations (une fois les services initialisés)
 make migrate
 make seed
 ```
