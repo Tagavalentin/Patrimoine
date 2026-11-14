@@ -71,9 +71,10 @@ class JwtService
     private function secret(): string
     {
         $secret = (string) config('jwt.secret');
+        $lower = strtolower($secret);
 
-        if ($secret === '' || $secret === 'change_me_in_production') {
-            throw new \RuntimeException('JWT_SECRET non configuré.');
+        if ($secret === '' || strlen($secret) < 32 || str_contains($lower, 'change_me') || str_contains($lower, 'example')) {
+            throw new \RuntimeException('JWT_SECRET invalide ou trop court (32 caracteres minimum).');
         }
 
         return $secret;

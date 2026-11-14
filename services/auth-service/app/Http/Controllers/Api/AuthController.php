@@ -31,7 +31,11 @@ class AuthController extends Controller
             ->where('email', $credentials['email'])
             ->first();
 
-        if ($user === null || ! Hash::check($credentials['password'], $user->password)) {
+        // Hash factice quand l'utilisateur n'existe pas : la vérification
+        // coûte le même temps et n'autorise pas l'énumération des emails.
+        $passwordHash = $user?->password ?? Hash::make('invalid-password-timing');
+
+        if ($user === null || ! Hash::check($credentials['password'], $passwordHash)) {
             throw ValidationException::withMessages([
                 'email' => ['Les identifiants fournis sont incorrects.'],
             ]);

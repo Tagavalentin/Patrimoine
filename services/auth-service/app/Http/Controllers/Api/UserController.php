@@ -32,7 +32,7 @@ class UserController extends Controller
             ->when($request->query('role'), fn ($query, string $role) => $query
                 ->whereHas('role', fn ($q) => $q->where('slug', $role)))
             ->latest()
-            ->paginate((int) $request->query('per_page', 15));
+            ->paginate(min(100, max(1, (int) $request->query('per_page', 15))));
 
         return UserResource::collection($users);
     }
@@ -70,6 +70,12 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
         $data = $request->validated();
+
+        // « password » est nullable dans la requête : ne jamais écraser
+        // le hash existant avec null.
+        if (($data['password'] ?? null) === null) {
+            unset($data['password']);
+        }
 
         $user->fill(collect($data)->except('role')->all());
 

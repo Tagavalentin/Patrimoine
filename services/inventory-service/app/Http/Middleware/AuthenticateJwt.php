@@ -32,6 +32,11 @@ class AuthenticateJwt
         }
 
         $claims = $this->jwt->decode($token);
+
+        if (! isset($claims['sub'])) {
+            throw new UnauthorizedHttpException('Bearer', 'Token invalide : claim « sub » manquant.');
+        }
+
         $jwtUser = new JwtUser($claims);
 
         $request->attributes->set('jwt.claims', $claims);

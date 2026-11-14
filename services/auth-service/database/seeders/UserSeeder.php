@@ -12,7 +12,8 @@ class UserSeeder extends Seeder
 {
     /**
      * Un compte de démonstration par rôle.
-     * Mot de passe commun : « password » (démo locale uniquement).
+     * Mot de passe : SEED_USER_PASSWORD, sinon « password » (local uniquement,
+     * refusé en production).
      *
      * @var array<string, array{name: string, email: string}>
      */
@@ -26,12 +27,22 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
+        $password = env('SEED_USER_PASSWORD');
+
+        if ($password === null) {
+            if (app()->environment('production')) {
+                throw new \RuntimeException('SEED_USER_PASSWORD est obligatoire en production.');
+            }
+
+            $password = 'password'; // démo locale uniquement
+        }
+
         foreach (self::USERS as $roleSlug => $data) {
             User::updateOrCreate(
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
-                    'password' => 'password', // hashé par le cast 'hashed' du modèle
+                    'password' => $password, // hashé par le cast 'hashed' du modèle
                     'role_id' => Role::where('slug', $roleSlug)->value('id'),
                     'email_verified_at' => now(),
                 ],
