@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  */
 class GatewayClient
 {
-    private const TIMEOUT = 10;
+    private const TIMEOUT = 30;
 
     /**
      * @param  array<string, mixed>  $params
