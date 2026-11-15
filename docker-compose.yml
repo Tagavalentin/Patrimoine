@@ -16,6 +16,15 @@ x-laravel-service: &laravel-service
   build:
     context: .
     dockerfile: docker/php/Dockerfile
+  # Les bind mounts Windows/OneDrive ne supportent pas flock() de façon
+  # fiable : les sessions et le cache fichier Laravel y bloquent les
+  # requêtes indéfiniment. On isole ces répertoires runtime en tmpfs.
+  tmpfs:
+    - /var/www/html/storage/framework/sessions
+    - /var/www/html/storage/framework/views
+    - /var/www/html/storage/framework/cache
+    - /var/www/html/storage/logs
+    - /var/www/html/bootstrap/cache
   depends_on:
     postgres:
       condition: service_healthy
@@ -92,6 +101,7 @@ services:
     container_name: patrimoine-auth-service
     volumes:
       - ./services/auth-service:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Auth Service"
       DB_DATABASE: ${AUTH_DB:-auth_db}
@@ -109,6 +119,7 @@ services:
     container_name: patrimoine-asset-service
     volumes:
       - ./services/asset-service:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Asset Service"
       DB_DATABASE: ${ASSET_DB:-asset_db}
@@ -126,6 +137,7 @@ services:
     container_name: patrimoine-maintenance-service
     volumes:
       - ./services/maintenance-service:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Maintenance Service"
       DB_DATABASE: ${MAINTENANCE_DB:-maintenance_db}
@@ -144,6 +156,7 @@ services:
     container_name: patrimoine-inventory-service
     volumes:
       - ./services/inventory-service:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Inventory Service"
       DB_DATABASE: ${INVENTORY_DB:-inventory_db}
@@ -162,6 +175,7 @@ services:
     container_name: patrimoine-reporting-service
     volumes:
       - ./services/reporting-service:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Reporting Service"
       DB_DATABASE: ${REPORTING_DB:-reporting_db}
@@ -256,6 +270,7 @@ services:
     container_name: patrimoine-frontend
     volumes:
       - ./frontend:/var/www/html
+      - ./docker/php/opcache-local.ini:/usr/local/etc/php/conf.d/zz-opcache-local.ini:ro
     environment:
       APP_NAME: "Gestion du Patrimoine"
       SESSION_DRIVER: file

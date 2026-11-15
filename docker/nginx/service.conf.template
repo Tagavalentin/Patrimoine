@@ -42,6 +42,11 @@ server {
     location ~ \.php$ {
         fastcgi_pass php_backend;
         fastcgi_index index.php;
+        # Premiers hits lents possibles sur bind mounts réseau (OneDrive) :
+        # le boot Laravel peut dépasser 60s tant qu'OPcache n'est pas chaud.
+        fastcgi_connect_timeout 10s;
+        fastcgi_send_timeout 300s;
+        fastcgi_read_timeout 300s;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
         # Propager les en-têtes utiles aux API (token JWT, etc.)
