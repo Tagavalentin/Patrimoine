@@ -78,6 +78,9 @@ les variables d'environnement ci-dessous et déployer.
 | `DB_PASSWORD`     | mot de passe de l'add-on                          |
 | `JWT_SECRET`      | **identique** sur les 5 services                  |
 | `JWT_TTL`         | `60`                                              |
+| `SESSION_DRIVER`  | `file`                                            |
+| `CACHE_STORE`     | `file`                                            |
+| `QUEUE_CONNECTION`| `sync`                                            |
 | `SEED_ON_BOOT`    | `1`                                               |
 | `PORT`            | `8000` (optionnel, défaut)                        |
 

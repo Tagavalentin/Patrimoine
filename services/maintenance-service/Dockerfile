@@ -1,5 +1,5 @@
-# Image de déploiement SnapDeploy — auth-service (php artisan serve).
-# Build context : ce dossier (services/auth-service).
+# Image de déploiement SnapDeploy — maintenance-service (php artisan serve).
+# Build context : ce dossier (services/maintenance-service).
 FROM php:8.3-cli-alpine
 
 RUN apk add --no-cache \
@@ -7,6 +7,8 @@ RUN apk add --no-cache \
         $PHPIZE_DEPS \
     && docker-php-ext-install -j"$(nproc)" \
         pdo pdo_pgsql intl bcmath zip opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

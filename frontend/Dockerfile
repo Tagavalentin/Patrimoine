@@ -15,6 +15,8 @@ RUN apk add --no-cache \
         $PHPIZE_DEPS \
     && docker-php-ext-install -j"$(nproc)" \
         pdo pdo_sqlite pdo_pgsql bcmath zip curl opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
