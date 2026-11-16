@@ -1,13 +1,22 @@
-# Dépendances et artefacts à exclure des images Docker
-.git
-**/vendor
+# Contexte de build SnapDeploy (Dockerfile racine = frontend).
+# On exclut tout ce qui n'est pas nécessaire au build frontend.
 **/node_modules
-**/.env
-!**/.env.example
-storage/logs/*
-storage/framework/cache/*
-storage/framework/sessions/*
-storage/framework/views/*
-*.md
+**/vendor
+services
+gateway
+docker
 docs
 design
+mock-gateway.js
+seeders-patrimoine.zip
+.git
+.gitignore
+README.md
+Makefile
+docker-compose.yml
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
