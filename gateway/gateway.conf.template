@@ -1,0 +1,81 @@
+# Gateway API — version SnapDeploy (template envsubst).
+# Les URLs des services sont fournies par variables d'environnement :
+#   AUTH_SERVICE_URL, ASSET_SERVICE_URL, MAINTENANCE_SERVICE_URL,
+#   INVENTORY_SERVICE_URL, REPORTING_SERVICE_URL  (https://....containers.snapdeploy.app)
+
+resolver 1.1.1.1 8.8.8.8 valid=60s;
+
+server {
+    listen 80;
+    server_name _;
+
+    # En-têtes de sécurité communs
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    location = / {
+        default_type application/json;
+        return 200 '{"service":"patrimoine-api-gateway","endpoints":{"auth":"/api/auth","assets":"/api/assets","maintenance":"/api/maintenance","inventory":"/api/inventory","reports":"/api/reports"}}';
+    }
+
+    location /api/auth/ {
+        rewrite ^/api/auth/(.*)$ /api/$1 break;
+        proxy_pass ${AUTH_SERVICE_URL};
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location /api/assets/ {
+        rewrite ^/api/assets/(.*)$ /api/$1 break;
+        proxy_pass ${ASSET_SERVICE_URL};
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location /api/maintenance/ {
+        rewrite ^/api/maintenance/(.*)$ /api/$1 break;
+        proxy_pass ${MAINTENANCE_SERVICE_URL};
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location /api/inventory/ {
+        rewrite ^/api/inventory/(.*)$ /api/$1 break;
+        proxy_pass ${INVENTORY_SERVICE_URL};
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location /api/reports/ {
+        rewrite ^/api/reports/(.*)$ /api/$1 break;
+        proxy_pass ${REPORTING_SERVICE_URL};
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location / {
+        default_type application/json;
+        return 404 '{"message":"Route inconnue"}';
+    }
+}
