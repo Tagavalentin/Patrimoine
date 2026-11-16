@@ -13,14 +13,19 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM php:8.3-cli-alpine
-RUN apk add --no-cache \
-        postgresql-dev libzip-dev oniguruma-dev curl-dev \
-        $PHPIZE_DEPS \
-    && docker-php-ext-install -j"$(nproc)" \
-        pdo pdo_sqlite pdo_pgsql bcmath zip curl opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del $PHPIZE_DEPS
+RUN set -e; \
+    for i in 1 2 3 4 5; do \
+        apk add --no-cache \
+            postgresql-dev libzip-dev oniguruma-dev curl-dev \
+            $PHPIZE_DEPS && break || sleep 15; \
+    done; \
+    docker-php-ext-install -j"$(nproc)" \
+        pdo pdo_sqlite pdo_pgsql bcmath zip curl opcache; \
+    for i in 1 2 3 4 5; do \
+        pecl install redis && break || sleep 15; \
+    done; \
+    docker-php-ext-enable redis; \
+    apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 

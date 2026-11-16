@@ -2,14 +2,19 @@
 # Build context : ce dossier (services/asset-service).
 FROM php:8.3-cli-alpine
 
-RUN apk add --no-cache \
-        postgresql-dev icu-dev libzip-dev oniguruma-dev \
-        $PHPIZE_DEPS \
-    && docker-php-ext-install -j"$(nproc)" \
-        pdo pdo_pgsql intl bcmath zip opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del $PHPIZE_DEPS
+RUN set -e; \
+    for i in 1 2 3 4 5; do \
+        apk add --no-cache \
+            postgresql-dev icu-dev libzip-dev oniguruma-dev \
+            $PHPIZE_DEPS && break || sleep 15; \
+    done; \
+    docker-php-ext-install -j"$(nproc)" \
+        pdo pdo_pgsql intl bcmath zip opcache; \
+    for i in 1 2 3 4 5; do \
+        pecl install redis && break || sleep 15; \
+    done; \
+    docker-php-ext-enable redis; \
+    apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
