@@ -31,7 +31,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 COPY frontend/composer.json frontend/composer.lock* ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+RUN composer install --no-dev --no-scripts --optimize-autoloader --no-interaction --prefer-dist
 
 COPY frontend/ ./
 COPY --from=assets /app/public/build ./public/build
