@@ -4,5 +4,8 @@
 # par variables d'environnement (voir gateway.conf.template).
 FROM nginx:1.27-alpine
 
+# Render injecte PORT ; 80 en repli pour un usage local.
+ENV PORT=80
+
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY gateway.conf.template /etc/nginx/templates/gateway.conf.template

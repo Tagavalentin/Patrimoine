@@ -6,7 +6,7 @@
 resolver 1.1.1.1 8.8.8.8 valid=60s;
 
 server {
-    listen 80;
+    listen ${PORT};
     server_name _;
 
     # En-têtes de sécurité communs

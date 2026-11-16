@@ -1,0 +1,305 @@
+# Blueprint Render — « Gestion du Patrimoine de l'État »
+# Déploiement : Render Dashboard → New → Blueprint → coller ce fichier
+# (ou `render blueprint launch` avec la CLI).
+#
+# Architecture : 7 web services Docker + 1 PostgreSQL managé.
+# Les secrets (APP_KEY, JWT_SECRET, mots de passe DB, URLs croisées)
+# sont marqués sync:false → à renseigner dans le dashboard après le
+# premier déploiement.
+#
+# ATTENTION aux limites du plan gratuit : les web services se
+# mettent en veille après inactivité et le Postgres gratuit expire.
+
+services:
+  # ---------------- Auth ----------------
+  - type: web
+    name: auth-service
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: services/auth-service/Dockerfile
+    dockerContext: services/auth-service
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "Auth Service"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: { name: patrimoine-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: patrimoine-db, property: port }
+      - key: DB_DATABASE
+        value: auth_db
+      - key: DB_USERNAME
+        fromDatabase: { name: patrimoine-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: patrimoine-db, property: password }
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: patrimoine-auth-service
+      - key: JWT_TTL
+        value: "60"
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SEED_ON_BOOT
+        value: "1"
+      - key: SEED_USER_PASSWORD
+        sync: false
+
+  # ---------------- Asset ----------------
+  - type: web
+    name: asset-service
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: services/asset-service/Dockerfile
+    dockerContext: services/asset-service
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "Asset Service"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: { name: patrimoine-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: patrimoine-db, property: port }
+      - key: DB_DATABASE
+        value: asset_db
+      - key: DB_USERNAME
+        fromDatabase: { name: patrimoine-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: patrimoine-db, property: password }
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: patrimoine-asset-service
+      - key: JWT_TTL
+        value: "60"
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SEED_ON_BOOT
+        value: "1"
+
+  # ---------------- Maintenance ----------------
+  - type: web
+    name: maintenance-service
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: services/maintenance-service/Dockerfile
+    dockerContext: services/maintenance-service
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "Maintenance Service"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: { name: patrimoine-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: patrimoine-db, property: port }
+      - key: DB_DATABASE
+        value: maintenance_db
+      - key: DB_USERNAME
+        fromDatabase: { name: patrimoine-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: patrimoine-db, property: password }
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: patrimoine-maintenance-service
+      - key: JWT_TTL
+        value: "60"
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SEED_ON_BOOT
+        value: "1"
+      - key: ASSET_SERVICE_URL
+        sync: false
+
+  # ---------------- Inventory ----------------
+  - type: web
+    name: inventory-service
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: services/inventory-service/Dockerfile
+    dockerContext: services/inventory-service
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "Inventory Service"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: { name: patrimoine-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: patrimoine-db, property: port }
+      - key: DB_DATABASE
+        value: inventory_db
+      - key: DB_USERNAME
+        fromDatabase: { name: patrimoine-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: patrimoine-db, property: password }
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: patrimoine-inventory-service
+      - key: JWT_TTL
+        value: "60"
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SEED_ON_BOOT
+        value: "1"
+      - key: ASSET_SERVICE_URL
+        sync: false
+
+  # ---------------- Reporting ----------------
+  - type: web
+    name: reporting-service
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: services/reporting-service/Dockerfile
+    dockerContext: services/reporting-service
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "Reporting Service"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: { name: patrimoine-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: patrimoine-db, property: port }
+      - key: DB_DATABASE
+        value: reporting_db
+      - key: DB_USERNAME
+        fromDatabase: { name: patrimoine-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: patrimoine-db, property: password }
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: patrimoine-reporting-service
+      - key: JWT_TTL
+        value: "60"
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SEED_ON_BOOT
+        value: "1"
+      - key: ASSET_SERVICE_URL
+        sync: false
+      - key: MAINTENANCE_SERVICE_URL
+        sync: false
+      - key: INVENTORY_SERVICE_URL
+        sync: false
+
+  # ---------------- API Gateway ----------------
+  - type: web
+    name: api-gateway
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: gateway/Dockerfile
+    dockerContext: gateway
+    healthCheckPath: /
+    envVars:
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: ASSET_SERVICE_URL
+        sync: false
+      - key: MAINTENANCE_SERVICE_URL
+        sync: false
+      - key: INVENTORY_SERVICE_URL
+        sync: false
+      - key: REPORTING_SERVICE_URL
+        sync: false
+
+  # ---------------- Frontend ----------------
+  - type: web
+    name: frontend
+    runtime: docker
+    repo: https://github.com/Tagavalentin/Patrimoine
+    branch: main
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: "Gestion du Patrimoine"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: GATEWAY_URL
+        sync: false
+
+databases:
+  - name: patrimoine-db
+    databaseName: patrimoine
+    user: patrimoine
+    plan: free
