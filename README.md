@@ -100,8 +100,29 @@ docker compose logs -f
 
 # 5. Lancer les migrations (une fois les services initialisés)
 make migrate
+
+# 5. Charger les données de démonstration (idempotent, à relancer sans risque)
 make seed
 ```
+
+### Comptes de démonstration
+
+`make seed` crée 5 comptes (mot de passe commun : `password`) alignés sur
+les données attendues par le frontend :
+
+| Email                        | Rôle             | Nom         |
+|------------------------------|------------------|-------------|
+| `admin@patrimoine.local`     | `admin`          | Admin Demo  |
+| `n.diaye@patrimoine.local`   | `asset_manager`  | M. Ndiaye   |
+| `m.fall@patrimoine.local`    | `accountant`     | M. Fall     |
+| `a.ba@patrimoine.local`      | `service_head`   | Mme Ba      |
+| `auditeur@patrimoine.local`  | `auditor`        | Auditeur    |
+
+Le seed produit les référentiels (catégories, services, lieux), 8 biens,
+4 affectations, 4 demandes de maintenance avec 2 interventions, 2 campagnes
+d'inventaire avec 8 lignes et 3 journaux d'audit — avec les mêmes identifiants
+que `mock-gateway.js`. Les seeders ne sont exécutés que via `make seed` :
+rien n'est chargé automatiquement en production.
 
 ## Ports exposés
 

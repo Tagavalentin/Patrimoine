@@ -82,11 +82,11 @@ class AuthTest extends TestCase
 
     public function test_me_returns_the_authenticated_user(): void
     {
-        $token = $this->login(['email' => 'auditor@patrimoine.local', 'password' => 'password']);
+        $token = $this->login(['email' => 'auditeur@patrimoine.local', 'password' => 'password']);
 
         $this->getJson('/api/me', $this->authHeaders($token))
             ->assertOk()
-            ->assertJsonPath('data.email', 'auditor@patrimoine.local')
+            ->assertJsonPath('data.email', 'auditeur@patrimoine.local')
             ->assertJsonPath('data.role.slug', 'auditor')
             ->assertJsonStructure(['data' => ['permissions']]);
     }
@@ -122,7 +122,7 @@ class AuthTest extends TestCase
 
     public function test_users_index_is_forbidden_for_non_admin(): void
     {
-        $token = $this->login(['email' => 'auditor@patrimoine.local', 'password' => 'password']);
+        $token = $this->login(['email' => 'auditeur@patrimoine.local', 'password' => 'password']);
 
         $this->getJson('/api/users', $this->authHeaders($token))
             ->assertForbidden();
@@ -178,7 +178,7 @@ class AuthTest extends TestCase
     public function test_admin_can_update_a_user(): void
     {
         $token = $this->login();
-        $userId = \App\Models\User::where('email', 'auditor@patrimoine.local')->value('id');
+        $userId = \App\Models\User::where('email', 'auditeur@patrimoine.local')->value('id');
 
         $this->putJson("/api/users/{$userId}", [
             'name' => 'Auditeur Principal',
@@ -201,7 +201,7 @@ class AuthTest extends TestCase
     public function test_admin_can_delete_another_user(): void
     {
         $token = $this->login();
-        $userId = \App\Models\User::where('email', 'auditor@patrimoine.local')->value('id');
+        $userId = \App\Models\User::where('email', 'auditeur@patrimoine.local')->value('id');
 
         $this->deleteJson("/api/users/{$userId}", [], $this->authHeaders($token))
             ->assertNoContent();

@@ -5,48 +5,58 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Role;
-use App\Models\User;
+use Database\Seeders\Concerns\SeedsTables;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
+    use SeedsTables;
+
     /**
-     * Un compte de démonstration par rôle.
-     * Mot de passe : SEED_USER_PASSWORD, sinon « password » (local uniquement,
-     * refusé en production).
+     * Comptes de démonstration alignés sur mock-gateway.js.
+     * Mot de passe : SEED_USER_PASSWORD, sinon « password » (local
+     * uniquement, refusé en production). Les ids sont explicites pour
+     * rester cohérents avec les responsible_user_id / requested_by
+     * des autres services.
      *
-     * @var array<string, array{name: string, email: string}>
+     * @var array<int, array{id: int, name: string, email: string, role: string}>
      */
     private const USERS = [
-        'admin' => ['name' => 'Administrateur', 'email' => 'admin@patrimoine.local'],
-        'asset_manager' => ['name' => 'Gestionnaire Patrimoine', 'email' => 'asset.manager@patrimoine.local'],
-        'service_head' => ['name' => 'Responsable Service', 'email' => 'service.head@patrimoine.local'],
-        'accountant' => ['name' => 'Agent Comptable', 'email' => 'accountant@patrimoine.local'],
-        'auditor' => ['name' => 'Auditeur', 'email' => 'auditor@patrimoine.local'],
+        ['id' => 1, 'name' => 'Admin Demo', 'email' => 'admin@patrimoine.local', 'role' => 'admin'],
+        ['id' => 2, 'name' => 'M. Ndiaye', 'email' => 'n.diaye@patrimoine.local', 'role' => 'asset_manager'],
+        ['id' => 3, 'name' => 'M. Fall', 'email' => 'm.fall@patrimoine.local', 'role' => 'accountant'],
+        ['id' => 4, 'name' => 'Mme Ba', 'email' => 'a.ba@patrimoine.local', 'role' => 'service_head'],
+        ['id' => 5, 'name' => 'Auditeur', 'email' => 'auditeur@patrimoine.local', 'role' => 'auditor'],
     ];
 
     public function run(): void
     {
-        $password = env('SEED_USER_PASSWORD');
+        $plainPassword = env('SEED_USER_PASSWORD');
 
-        if ($password === null) {
+        if ($plainPassword === null) {
             if (app()->environment('production')) {
                 throw new \RuntimeException('SEED_USER_PASSWORD est obligatoire en production.');
             }
 
-            $password = 'password'; // démo locale uniquement
+            $plainPassword = 'password'; // démo locale uniquement
         }
 
-        foreach (self::USERS as $roleSlug => $data) {
-            User::updateOrCreate(
-                ['email' => $data['email']],
-                [
-                    'name' => $data['name'],
-                    'password' => $password, // hashé par le cast 'hashed' du modèle
-                    'role_id' => Role::where('slug', $roleSlug)->value('id'),
-                    'email_verified_at' => now(),
-                ],
-            );
-        }
+        $password = Hash::make($plainPassword);
+        $verifiedAt = now();
+
+        $rows = array_map(
+            fn (array $user): array => [
+                'id' => $user['id'],
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'email_verified_at' => $verifiedAt,
+                'password' => $password,
+                'role_id' => Role::where('slug', $user['role'])->value('id'),
+            ],
+            self::USERS,
+        );
+
+        $this->seedTable('users', $rows);
     }
 }
