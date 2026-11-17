@@ -20,6 +20,7 @@ services:
     dockerfilePath: services/auth-service/Dockerfile
     dockerContext: services/auth-service
     healthCheckPath: /api/health
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && if [ "$SEED_ON_BOOT" = "1" ]; then php artisan db:seed --force; fi && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Auth Service"
@@ -67,6 +68,7 @@ services:
     dockerfilePath: services/asset-service/Dockerfile
     dockerContext: services/asset-service
     healthCheckPath: /api/health
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && if [ "$SEED_ON_BOOT" = "1" ]; then php artisan db:seed --force; fi && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Asset Service"
@@ -112,6 +114,7 @@ services:
     dockerfilePath: services/maintenance-service/Dockerfile
     dockerContext: services/maintenance-service
     healthCheckPath: /api/health
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && if [ "$SEED_ON_BOOT" = "1" ]; then php artisan db:seed --force; fi && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Maintenance Service"
@@ -159,6 +162,7 @@ services:
     dockerfilePath: services/inventory-service/Dockerfile
     dockerContext: services/inventory-service
     healthCheckPath: /api/health
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && if [ "$SEED_ON_BOOT" = "1" ]; then php artisan db:seed --force; fi && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Inventory Service"
@@ -206,6 +210,7 @@ services:
     dockerfilePath: services/reporting-service/Dockerfile
     dockerContext: services/reporting-service
     healthCheckPath: /api/health
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && if [ "$SEED_ON_BOOT" = "1" ]; then php artisan db:seed --force; fi && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Reporting Service"
@@ -257,6 +262,7 @@ services:
     dockerfilePath: gateway/Dockerfile
     dockerContext: gateway
     healthCheckPath: /
+    dockerCommand: "nginx -g 'daemon off;'"
     envVars:
       - key: AUTH_SERVICE_URL
         sync: false
@@ -278,6 +284,7 @@ services:
     dockerfilePath: Dockerfile
     dockerContext: .
     healthCheckPath: /up
+    dockerCommand: 'php artisan package:discover && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
     envVars:
       - key: APP_NAME
         value: "Gestion du Patrimoine"
