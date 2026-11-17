@@ -1,9 +1,9 @@
 # Image monolithe SnapDeploy — toute la plateforme dans UN conteneur.
-# Contient : frontend (8000), auth (8001), asset (8002), maintenance (8003),
-# inventory (8004), reporting (8005) + nginx passerelle sur ${PORT}.
+# frontend (8000), auth (8001), asset (8002), maintenance (8003),
+# inventory (8004), reporting (8005) + nginx sur ${PORT}.
+# L'image PHP officielle fournit déjà pdo_sqlite, mbstring, curl, etc.
 # Build context : racine du repo.
 
-# --- Étape 1 : compilation des assets Vite du frontend ---
 FROM node:20-alpine AS assets
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json* ./
@@ -11,24 +11,12 @@ RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
 COPY frontend/ .
 RUN npm run build
 
-# --- Étape 2 : PHP + nginx ---
 FROM php:8.3-cli-alpine
-
-RUN set -e; \
-    for i in 1 2 3 4 5; do \
-        apk add --no-cache nginx icu-dev libzip-dev oniguruma-dev \
-            curl-dev sqlite-dev postgresql-dev $PHPIZE_DEPS && break || sleep 15; \
-    done; \
-    docker-php-ext-install -j"$(nproc)" \
-        pdo pdo_pgsql pdo_sqlite intl bcmath zip curl opcache; \
-    apk del $PHPIZE_DEPS
+RUN apk add --no-cache nginx unzip
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www/app
 
-# Dépendances PHP des 6 applications (install sans scripts : artisan
-# n'est pas encore copié ; package:discover tourne au démarrage).
 COPY services/auth-service/composer.json services/auth-service/composer.lock ./auth/
 COPY services/asset-service/composer.json services/asset-service/composer.lock ./asset/
 COPY services/maintenance-service/composer.json services/maintenance-service/composer.lock ./maintenance/
@@ -41,7 +29,6 @@ RUN set -e; \
             --optimize-autoloader --no-interaction --prefer-dist); \
     done
 
-# Code source des 6 applications
 COPY services/auth-service/ ./auth/
 COPY services/asset-service/ ./asset/
 COPY services/maintenance-service/ ./maintenance/
@@ -50,7 +37,6 @@ COPY services/reporting-service/ ./reporting/
 COPY frontend/ ./frontend/
 COPY --from=assets /app/public/build ./frontend/public/build
 
-# Bases SQLite + répertoires runtime
 RUN set -e; \
     for app in auth asset maintenance inventory reporting frontend; do \
         mkdir -p "/var/www/app/$app/database" \
