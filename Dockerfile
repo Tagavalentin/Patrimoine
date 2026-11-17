@@ -16,7 +16,7 @@ FROM php:8.3-cli-alpine
 RUN set -e; \
     for i in 1 2 3 4 5; do \
         apk add --no-cache \
-            postgresql-dev libzip-dev oniguruma-dev curl-dev \
+            postgresql-dev libzip-dev oniguruma-dev curl-dev sqlite-dev \
             $PHPIZE_DEPS && break || sleep 15; \
     done; \
     docker-php-ext-install -j"$(nproc)" \
