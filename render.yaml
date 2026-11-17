@@ -28,7 +28,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:vDBHlxBry8Q1GvZJaBXJi7bnaE0rf65mZ6oasoD+I/Y="
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -42,7 +42,7 @@ services:
       - key: DB_PASSWORD
         fromDatabase: { name: patrimoine-db, property: password }
       - key: JWT_SECRET
-        sync: false
+        value: "2a57af8710d0003e85ea7dcc73ef1bb41ef068a8f6a08134644493c51f88b0b9d6507384b0399eb6d1697d8cd5af7ddfb2192cccddbc776df9c151599517c057"
       - key: JWT_ISSUER
         value: patrimoine-auth-service
       - key: JWT_TTL
@@ -56,7 +56,7 @@ services:
       - key: SEED_ON_BOOT
         value: "1"
       - key: SEED_USER_PASSWORD
-        sync: false
+        value: "password"
 
   # ---------------- Asset ----------------
   - type: web
@@ -75,7 +75,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:gxx5ygNGAIMbO/mt4V3RdLjc8+ZQSF/OpnPWODiCRfw="
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -89,7 +89,7 @@ services:
       - key: DB_PASSWORD
         fromDatabase: { name: patrimoine-db, property: password }
       - key: JWT_SECRET
-        sync: false
+        value: "2a57af8710d0003e85ea7dcc73ef1bb41ef068a8f6a08134644493c51f88b0b9d6507384b0399eb6d1697d8cd5af7ddfb2192cccddbc776df9c151599517c057"
       - key: JWT_ISSUER
         value: patrimoine-asset-service
       - key: JWT_TTL
@@ -120,7 +120,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:Z56DcJudLrx67xiTmjy/Zsjh+2DPRFJUEafmDNrf+hw="
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -134,7 +134,7 @@ services:
       - key: DB_PASSWORD
         fromDatabase: { name: patrimoine-db, property: password }
       - key: JWT_SECRET
-        sync: false
+        value: "2a57af8710d0003e85ea7dcc73ef1bb41ef068a8f6a08134644493c51f88b0b9d6507384b0399eb6d1697d8cd5af7ddfb2192cccddbc776df9c151599517c057"
       - key: JWT_ISSUER
         value: patrimoine-maintenance-service
       - key: JWT_TTL
@@ -167,7 +167,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:Ut12VolawFJ7dl+v42um79iR/no13UhL2ITf7skg1c4="
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -181,7 +181,7 @@ services:
       - key: DB_PASSWORD
         fromDatabase: { name: patrimoine-db, property: password }
       - key: JWT_SECRET
-        sync: false
+        value: "2a57af8710d0003e85ea7dcc73ef1bb41ef068a8f6a08134644493c51f88b0b9d6507384b0399eb6d1697d8cd5af7ddfb2192cccddbc776df9c151599517c057"
       - key: JWT_ISSUER
         value: patrimoine-inventory-service
       - key: JWT_TTL
@@ -214,7 +214,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:FhG8l2f9McluAh9R1ldw6wF/t58h+rLRHTQSNJKQvWc="
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -228,7 +228,7 @@ services:
       - key: DB_PASSWORD
         fromDatabase: { name: patrimoine-db, property: password }
       - key: JWT_SECRET
-        sync: false
+        value: "2a57af8710d0003e85ea7dcc73ef1bb41ef068a8f6a08134644493c51f88b0b9d6507384b0399eb6d1697d8cd5af7ddfb2192cccddbc776df9c151599517c057"
       - key: JWT_ISSUER
         value: patrimoine-reporting-service
       - key: JWT_TTL
@@ -286,7 +286,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false
+        value: "base64:4ByED6yFD/dDlqlPsYMIVVhUdK/09Z7+0ahK4uzX8/o="
       - key: DB_CONNECTION
         value: sqlite
       - key: SESSION_DRIVER
